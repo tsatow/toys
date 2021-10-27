@@ -34,14 +34,14 @@ pub enum Operator {
 }
 
 pub enum Expression<'a> {
-    BinaryExpression { operator: Operator, lhs: &'a Expression<'a>, rhs: &'a Expression<'a> },
-    Assignment { name: &'a str, expr: &'a Expression<'a> },
+    BinaryExpression { operator: Operator, lhs: &'a Self, rhs: &'a Self },
+    Assignment { name: &'a str, expr: &'a Self },
     Identifier(&'a str),
     ValueExpression(Value),
-    BlockExpression { expressions: &'a [Expression<'a>] },
-    WhileExpression { condition: &'a Expression<'a>, body: &'a Expression<'a> },
-    IfExpression { condition: &'a Expression<'a>, then_clause: &'a Expression<'a>, else_clause: &'a Option<Expression<'a>> },
-    FunctionCall { name: &'a str, args: &'a [Expression<'a>] },
+    BlockExpression { expressions: &'a [Self] },
+    WhileExpression { condition: &'a Self, body: &'a Self },
+    IfExpression { condition: &'a Self, then_clause: &'a Self, else_clause: &'a Option<Self> },
+    FunctionCall { name: &'a str, args: &'a [Self] },
 }
 
 impl<'a> Expression<'a> {
