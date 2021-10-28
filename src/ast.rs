@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::ast::Expression::ValueExpression;
 
 pub enum TopLevel<'a> {
     GlobalVariableDefinition {},
@@ -10,14 +11,8 @@ pub struct Environment<'a> {
     pub next: Option<Expression<'a>>
 }
 
-pub struct Program {
-
-}
-
-impl Program {
-    pub fn definitions<'a>(&self) -> &[TopLevel<'a>] {
-        todo!()
-    }
+pub struct Program<'a> {
+    pub definitions: &'a [TopLevel<'a>]
 }
 
 pub enum Operator {
@@ -45,6 +40,7 @@ pub enum Expression<'a> {
 }
 
 impl<'a> Expression<'a> {
+    const ValueExp: Expression<'static> = ValueExpression(1);
     pub fn add(lhs: &'a Self, rhs: &'a Self) -> Self {
         Expression::BinaryExpression { operator: Operator::Add, lhs, rhs }
     }
@@ -66,7 +62,10 @@ impl<'a> Expression<'a> {
     pub fn while_exp(condition: &'a Self, body: &'a Self) -> Self {
         Expression::WhileExpression { condition, body }
     }
-    pub fn if_exp(condition: &'a Self, then_clause: &'a Self, else_clause: &'a Option<Self>) -> Self {
+    pub fn if_exp(condition: &'a Self, then_clause: &'a Self) -> Self {
+        Expression::IfExpression { condition, then_clause, else_clause: &None }
+    }
+    pub fn if_else_exp(condition: &'a Self, then_clause: &'a Self, else_clause: &'a Option<Self>) -> Self {
         Expression::IfExpression { condition, then_clause, else_clause }
     }
 }
@@ -99,8 +98,12 @@ pub fn while_exp<'a>(condition: &'a Expression<'a>, body: &'a Expression<'a>) ->
     Expression::while_exp(condition, body)
 }
 
+pub fn if_exp<'a>(condition: &'a Expression<'a>, then_clause: &'a Expression<'a>) -> Expression<'a> {
+    Expression::if_exp(condition, then_clause)
+}
+
 pub fn if_else_exp<'a>(condition: &'a Expression<'a>, then_clause: &'a Expression<'a>, else_clause: &'a Option<Expression<'a>>) -> Expression<'a> {
-    Expression::if_exp(condition, then_clause, else_clause)
+    Expression::if_else_exp(condition, then_clause, else_clause)
 }
 
 pub type Value = i32;

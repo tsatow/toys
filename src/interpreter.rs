@@ -12,7 +12,7 @@ struct Interpreter<'a> {
 
 impl<'a> Interpreter<'a> {
     pub fn call_main(&mut self, program: &'a Program) -> Value {
-        let topLevels = program.definitions();
+        let topLevels = program.definitions;
         for topLevel in topLevels {
             match topLevel {
                 FunctionDefinition { name, args: _, body: _ } => {
@@ -26,6 +26,7 @@ impl<'a> Interpreter<'a> {
             _ => panic!("This program doesn't have main() function")
         }
     }
+
     fn interpret(&mut self, expression: &'a Expression<'a>) -> Value {
         match expression {
             BinaryExpression { operator, lhs, rhs } => match operator {
